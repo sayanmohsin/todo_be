@@ -1,11 +1,12 @@
 import { pgClient } from "../../configs/db.config";
 import { v4 as uuidv4 } from 'uuid';
 import { QueryOptions, TodoItem } from "../../types/custom.type";
+import { ErrorHandler } from "../../utils/server.util";
 
 const todoItemDB = {
     create: async (
         data: TodoItem
-    ): Promise<TodoItem | boolean> => {
+    ): Promise<TodoItem> => {
         try {
             if (!data.todo_item_id || typeof data.todo_item_id == 'undefined')
                 data.todo_item_id = uuidv4();
@@ -13,17 +14,15 @@ const todoItemDB = {
             if (!data.checked || typeof data.checked == 'undefined')
                 data.checked = false;
 
-            console.log('data: ', data);
-
             const query = {
                 text: 'INSERT INTO todo_items (todo_item_id, description, checked, todo_list_id) VALUES($1, $2, $3, $4) RETURNING *',
                 values: [data.todo_item_id, data.description, data.checked, data.todo_list_id]
             }
-            console.log('query: ', query);
+
             const result = await pgClient.query(query);
 
             if (result.rows.length === 0 || !result.rows[0])
-                return false;
+                throw new ErrorHandler(400, "Todo item create failed");
 
             const newTodoItem = result.rows[0] as TodoItem;
             return newTodoItem;
@@ -35,7 +34,7 @@ const todoItemDB = {
     findAll: async (
         todo_list_id: string,
         queryOptions: QueryOptions = {}
-    ): Promise<TodoItem[] | boolean> => {
+    ): Promise<TodoItem[]> => {
         try {
 
             let query: {
@@ -58,7 +57,7 @@ const todoItemDB = {
             const result = await pgClient.query(query);
 
             if (!result.rows)
-                return false;
+                throw new ErrorHandler(400, "Todo item create failed");
 
             const todoItems = result.rows as TodoItem[];
             return todoItems;
@@ -70,7 +69,7 @@ const todoItemDB = {
     findOneInItem: async (
         todo_list_id: string,
         todo_item_id: string,
-    ): Promise<TodoItem | boolean> => {
+    ): Promise<TodoItem> => {
         try {
 
             const query = {
@@ -81,10 +80,10 @@ const todoItemDB = {
             const result = await pgClient.query(query);
 
             if (!result.rows)
-                return false;
+                throw new ErrorHandler(400, "Todo item find failed");
 
             if (result.rows.length === 0 || !result.rows[0])
-                return false;
+                throw new ErrorHandler(400, "Todo item find failed");
 
             const newTodoItem = result.rows[0] as TodoItem;
             return newTodoItem;
@@ -96,19 +95,20 @@ const todoItemDB = {
     delete: async (
         todo_list_id: string,
         todo_item_id: string
-    ): Promise<TodoItem | boolean> => {
+    ): Promise<TodoItem> => {
         try {
             const query = {
-                text: 'DELETE FROM todo_items WHERE todo_item_id = $1 AND todo_list_id = $2',
+                text: 'DELETE FROM todo_items WHERE todo_item_id = $1 AND todo_list_id = $2 RETURNING *',
                 values: [todo_item_id, todo_list_id],
             };
+
             const result = await pgClient.query(query);
 
             if (!result.rows || !result.rows)
-                return false
+                throw new ErrorHandler(400, "Todo item delete failed");
 
             if (result.rows.length === 0 || !result.rows[0])
-                return false;
+                throw new ErrorHandler(400, "Todo item delete failed");
 
             const todoItem = result.rows[0] as TodoItem;
             return todoItem;
@@ -121,7 +121,7 @@ const todoItemDB = {
         todo_list_id: string,
         todo_item_id: string,
         description: string
-    ): Promise<TodoItem | boolean> => {
+    ): Promise<TodoItem> => {
         try {
 
             const query = {
@@ -132,10 +132,10 @@ const todoItemDB = {
             const result = await pgClient.query(query);
 
             if (!result.rows)
-                return false;
+                throw new ErrorHandler(400, "Todo item update failed");
 
             if (result.rows.length === 0 || !result.rows[0])
-                return false;
+                throw new ErrorHandler(400, "Todo item update failed");
 
             const newTodoItem = result.rows[0] as TodoItem;
             return newTodoItem;
@@ -148,7 +148,7 @@ const todoItemDB = {
         todo_list_id: string,
         todo_item_id: string,
         checked: boolean
-    ): Promise<TodoItem | boolean> => {
+    ): Promise<TodoItem> => {
         try {
 
             const query = {
@@ -159,10 +159,10 @@ const todoItemDB = {
             const result = await pgClient.query(query);
 
             if (!result.rows)
-                return false;
+                throw new ErrorHandler(400, "Todo item update failed");
 
             if (result.rows.length === 0 || !result.rows[0])
-                return false;
+                throw new ErrorHandler(400, "Todo item update failed");
 
             const newTodoItem = result.rows[0] as TodoItem;
             return newTodoItem;

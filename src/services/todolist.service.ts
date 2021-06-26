@@ -8,13 +8,11 @@ export class TodoListService {
         this.todoList = todoList
     }
 
-    async createTodoList(): Promise<TodoList | boolean> {
+    async createTodoList(): Promise<TodoList> {
         try {
             const todoList = await todoListDB.create({
                 name: this.todoList.name
             });
-            if (!todoList)
-                throw new ErrorHandler(400, "Todo list create failed");
 
             return todoList;
         } catch (e) {
@@ -25,7 +23,7 @@ export class TodoListService {
 
     static async getAllTodoLists(
         queryOptions: QueryOptions = {}
-    ): Promise<TodoList[] | boolean> {
+    ): Promise<TodoList[]> {
         try {
             const todoLists = await todoListDB.findAll(queryOptions);
             if (!todoLists)
@@ -40,7 +38,7 @@ export class TodoListService {
 
     static async getOneTodoList(
         todo_list_id: string
-    ): Promise<TodoList | boolean> {
+    ): Promise<TodoList> {
         try {
             const todoList = await todoListDB.findByPk(todo_list_id);
             if (!todoList)
@@ -56,7 +54,7 @@ export class TodoListService {
     static async updateTodoListName(
         todo_list_id: string,
         name: string
-    ): Promise<TodoList | boolean> {
+    ): Promise<TodoList> {
         try {
             const todoList = await todoListDB.updateName(todo_list_id, name);
             if (!todoList)
@@ -71,7 +69,7 @@ export class TodoListService {
 
     static async deleteTodoList(
         todo_list_id: string
-    ): Promise<TodoList | boolean> {
+    ): Promise<TodoList> {
         try {
             let todoList = await todoListDB.findByPk(todo_list_id);
             if (!todoList)

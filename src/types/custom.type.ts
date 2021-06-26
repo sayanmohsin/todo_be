@@ -15,3 +15,9 @@ export type QueryOptions = {
     limit?: number,
     offset?: 0 | number
 }
+
+export type IResponse<T> = {
+    success: boolean;
+    message: string;
+    data: T;
+}

@@ -10,7 +10,7 @@ export class TodoItemService {
         this.todoItem = todoItem
     }
 
-    async createTodoItem(): Promise<TodoItem | boolean> {
+    async createTodoItem(): Promise<TodoItem> {
         try {
             const todoList = await TodoListService.getOneTodoList(this.todoItem.todo_list_id);
             if (!todoList || typeof todoList == 'undefined')
@@ -30,7 +30,7 @@ export class TodoItemService {
     static async getAllTodoItems(
         todo_list_id: string,
         queryOptions: QueryOptions = {}
-    ): Promise<TodoItem[] | boolean> {
+    ): Promise<TodoItem[]> {
         try {
             const todoItems = await todoItemDB.findAll(todo_list_id, queryOptions);
             if (!todoItems)
@@ -46,7 +46,7 @@ export class TodoItemService {
     static async getOneTodoItem(
         todo_list_id: string,
         todo_item_id: string
-    ): Promise<TodoItem | boolean> {
+    ): Promise<TodoItem> {
         try {
             const todoItem = await todoItemDB.findOneInItem(todo_list_id, todo_item_id);
             if (!todoItem)
@@ -62,7 +62,7 @@ export class TodoItemService {
     static async deleteTodoItem(
         todo_list_id: string,
         todo_item_id: string
-    ): Promise<TodoItem | boolean> {
+    ): Promise<TodoItem> {
         try {
             const todoItem = await todoItemDB.delete(todo_list_id, todo_item_id);
             if (!todoItem)
@@ -79,7 +79,7 @@ export class TodoItemService {
         todo_list_id: string,
         todo_item_id: string,
         description: string
-    ): Promise<TodoItem | boolean> {
+    ): Promise<TodoItem> {
         try {
             const todoItem = await todoItemDB.updateDescription(todo_list_id, todo_item_id, description);
             if (!todoItem)
@@ -96,7 +96,7 @@ export class TodoItemService {
         todo_list_id: string,
         todo_item_id: string,
         checked: boolean
-    ): Promise<TodoItem | boolean> {
+    ): Promise<TodoItem> {
         try {
             const todoItem = await todoItemDB.updateChecked(todo_list_id, todo_item_id, checked);
             if (!todoItem)

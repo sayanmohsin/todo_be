@@ -31,11 +31,9 @@ import { pgConnect } from './configs/db.config';
 
     const app: Application = express();
     await pgConnect()
-    // import('./services/todolist.service');
-    import('./services/todoitem.service');
 
     // routes
-    // const { openRouter } = await import('./routes/open');
+    const { todoRouter } = await import('./routes/todo');
 
     const port: string | boolean = normalizePort(env.PORT || '3000');
 
@@ -47,7 +45,7 @@ import { pgConnect } from './configs/db.config';
         logger: logger,
       }) as any
     );
-    // app.use(passport.initialize())
+
     app.use(helmet() as any);
     app.use(compression());
 
@@ -56,23 +54,29 @@ import { pgConnect } from './configs/db.config';
         limit: '50mb'
       }) as any
     );
+
     app.use(
       express.urlencoded({
         limit: '50mb', extended: true
       }) as any
     );
     app.use(cookieParser());
+
     app.use(
       '/public',
       express.static(path.join(__dirname, '../public'))
     );
+
+    app.all('/', (req, res) => {
+      res.redirect('https://documenter.getpostman.com/view/3873826/Tzedi53j');
+    });
 
     app.all('/health', (req: Request, res: Response, next: NextFunction) => {
       try {
         res.send({
           health: true,
           message: 'healthy',
-          version: 1.2,
+          version: 1.0,
           environment: env.NODE_ENV
         });
       } catch (err) {
@@ -80,7 +84,7 @@ import { pgConnect } from './configs/db.config';
       }
     });
 
-    // app.use('/auths', await authsRouter());
+    app.use('/todo', await todoRouter());
 
     // auth error
     app.get('/forbidden', forbiddenHandlerMiddleware);

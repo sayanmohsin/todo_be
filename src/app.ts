@@ -13,6 +13,7 @@ import expressPino from 'express-pino-logger';
 import { normalizePort } from './utils/server.util';
 import { successMsg, errorMsg, infoMsg } from './configs/log.config';
 import { errorHandlerMiddleware, forbiddenHandlerMiddleware, notFoundHandlerMiddleware } from './middlewares/handlers.middleware';
+import { pgConnect } from './configs/db.config';
 
 (async () => {
   try {
@@ -29,8 +30,12 @@ import { errorHandlerMiddleware, forbiddenHandlerMiddleware, notFoundHandlerMidd
     });
 
     const app: Application = express();
+    await pgConnect()
+    // import('./services/todolist.service');
+    import('./services/todoitem.service');
 
     // routes
+    // const { openRouter } = await import('./routes/open');
 
     const port: string | boolean = normalizePort(env.PORT || '3000');
 
@@ -75,6 +80,8 @@ import { errorHandlerMiddleware, forbiddenHandlerMiddleware, notFoundHandlerMidd
       }
     });
 
+    // app.use('/auths', await authsRouter());
+
     // auth error
     app.get('/forbidden', forbiddenHandlerMiddleware);
 
@@ -88,7 +95,7 @@ import { errorHandlerMiddleware, forbiddenHandlerMiddleware, notFoundHandlerMidd
       console.log(successMsg(`Express server started on port ${port}`));
     });
 
-  } catch (e) {
+  } catch (e: any) {
     console.log('e: ', e);
     console.log(errorMsg`Server start error due to ${e.message}`);
   }

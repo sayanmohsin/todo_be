@@ -5,9 +5,9 @@
   "main": "app.ts",
   "scripts": {
     "build": "tsc",
-    "dev": "dotenv -e .env.local -- nodemon",
-    "stage": "dotenv -e .env.stage -- pm2-runtime process.yml",
-    "prod": "dotenv -e .env.production -- pm2-runtime process.yml",
+    "dev": "dotenv -e .env -- nodemon",
+    "prod": "dotenv -e .env -- pm2-runtime process.yml",
+    "setup:pgdb": "dotenv -e .env -- node ./database/pgSetup",
     "lint": "eslint ./src/",
     "lint:fix": "eslint ./src/ --fix"
   },
@@ -29,9 +29,11 @@
     "express": "^4.17.1",
     "express-pino-logger": "^6.0.0",
     "helmet": "^4.6.0",
+    "pg": "^8.6.0",
     "pino": "^6.11.3",
     "pino-http": "^5.5.0",
-    "pino-pretty": "^5.1.0"
+    "pino-pretty": "^5.1.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/compression": "^1.7.0",
@@ -41,6 +43,8 @@
     "@types/express-pino-logger": "^4.0.2",
     "@types/http-errors": "^1.8.0",
     "@types/node": "^15.12.4",
+    "@types/pg": "^8.6.0",
+    "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^4.28.0",
     "@typescript-eslint/parser": "^4.28.0",
     "dotenv-cli": "^4.0.0",

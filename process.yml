@@ -1,0 +1,6 @@
+apps:
+  - script: ./dist/app.js
+    name: "todo_be"
+    instances: max
+    exec_mode: "cluster"
+    max_memory_restart: "300M"

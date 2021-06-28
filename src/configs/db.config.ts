@@ -8,13 +8,14 @@ import pgTodoListDB from '../models/pg/todolist.pg';
 import pgTodoItemDB from '../models/pg/todoitem.pg';
 import mongoTodoListDB from '../models/mongo/todolist.mongo';
 import mongoTodoItemDB from '../models/mongo/todoitem.mongo';
+import pino from 'pino';
 
 export let pgClient = {} as any;
 export let mongoClient = {} as any;
 export let todoItemDB = {} as any;
 export let todoListDB = {} as any;
 
-export const pgConnect = async () => {
+export const pgConnect = async (logger: pino.Logger) => {
     try {
         pgClient = new Client({
             user: env.PGUSER,
@@ -24,14 +25,14 @@ export const pgConnect = async () => {
             port: env.PGPORT
         })
         await pgClient.connect();
-        console.log(infoMsg(`connected to pg database`));
+        logger.info(infoMsg(`connected to pg database`));
         return;
     } catch (e: any) {
         console.error('e: ', e);
     }
 }
 
-export const mongoConnect = async () => {
+export const mongoConnect = async (logger: pino.Logger) => {
     try {
         const connectionString = env.MONGO_CONNECTION_STRING;
         mongoClient = new MongoClient(
@@ -42,23 +43,23 @@ export const mongoConnect = async () => {
         );
         await mongoClient.connect();
         mongoClient.db = mongoClient.db('todo_db');
-        console.log(infoMsg(`connected to mongo database`));
+        logger.info(infoMsg(`connected to mongo database`));
         return;
     } catch (e: any) {
         console.error('e: ', e);
     }
 }
 
-export const initDataSource = async () => {
+export const initDataSource = async (logger: pino.Logger) => {
     try {
         if (env.CURRENT_DATASOURCE === 'pg') {
             todoListDB = pgTodoListDB;
             todoItemDB = pgTodoItemDB;
-            console.log(infoMsg(`current datasource set to pg`));
+            logger.info(infoMsg(`current datasource set to pg`));
         } else if (env.CURRENT_DATASOURCE === 'mongo') {
             todoListDB = mongoTodoListDB;
             todoItemDB = mongoTodoItemDB;
-            console.log(infoMsg(`current datasource set to mongo`));
+            logger.info(infoMsg(`current datasource set to mongo`));
         }
         return;
     } catch (e: any) {

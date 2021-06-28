@@ -15,24 +15,29 @@ import { successMsg, errorMsg, infoMsg } from './configs/log.config';
 import { errorHandlerMiddleware, forbiddenHandlerMiddleware, notFoundHandlerMiddleware } from './middlewares/handlers.middleware';
 import { initDataSource, mongoConnect, pgConnect } from './configs/db.config';
 
-(async () => {
+let level = env.NODE_ENV === 'production' ? 'info' : 'error'
+if (env.NODE_ENV === 'test')
+  level = 'silent'
+
+const logger = pino({
+  name: 'TODO_BE',
+  level: level,
+  prettyPrint: {
+    colorize: true,
+    levelFirst: false,
+    timestampKey: 'time',
+    translateTime: false,
+  },
+});
+
+const appInstance = (async () => {
   try {
-    console.log(infoMsg(`Starting server`));
-    const logger = pino({
-      name: 'TODO_BE',
-      level: env.NODE_ENV === 'production' ? 'info' : 'error',
-      prettyPrint: {
-        colorize: true,
-        levelFirst: false,
-        timestampKey: 'time',
-        translateTime: false,
-      },
-    });
+    logger.info(infoMsg(`Starting server`));
 
     const app: Application = express();
-    await pgConnect()
-    await mongoConnect();
-    await initDataSource();
+    await pgConnect(logger)
+    await mongoConnect(logger);
+    await initDataSource(logger);
 
     // routes
     const { todoRouter } = await import('./routes/todo');
@@ -98,11 +103,15 @@ import { initDataSource, mongoConnect, pgConnect } from './configs/db.config';
     app.use(errorHandlerMiddleware);
 
     app.listen(port, (): void => {
-      console.log(successMsg(`Express server started on port ${port}`));
+      logger.info(successMsg(`Express server started on port ${port}`));
     });
 
+    return app;
+
   } catch (e: any) {
-    console.log('e: ', e);
-    console.log(errorMsg`Server start error due to ${e.message}`);
+    logger.error('e: ', e);
+    logger.error(errorMsg`Server start error due to ${e.message}`);
   }
 })();
+
+export default appInstance;

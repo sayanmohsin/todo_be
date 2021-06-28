@@ -3,6 +3,7 @@
 ## Docker Commands
 
 for running with docker-compose
+
 ```sh
 docker-compose up --build -d
 ```
@@ -10,19 +11,22 @@ docker-compose up --build -d
 ## Development
 
 To start server in development mode:
+
 ```sh
 npm run dev
 ```
 
-## Development
-To test fuctional requirements (default: mongodb)
+## Production
+
+To start server in production mode:
 
 ```sh
-npm run test
+npm run prod
 ```
 
-## Production
-To start server in development mode:
+## Testing
+
+To test fuctional requirements with mongodb (default: mongodb)
 
 ```sh
 npm run test

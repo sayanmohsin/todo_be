@@ -76,7 +76,7 @@ export const getTodoItemCtrl = async (req: Request, res: Response, next: NextFun
  */
 export const deleteTodoItemCtrl = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const result: IResponse<TodoItem> = {} as IResponse<TodoItem>;
+        const result: IResponse<boolean> = {} as IResponse<boolean>;
 
         const todo_list_id = req.params.todo_list_id as string;
         const todo_item_id = req.params.todo_item_id as string;

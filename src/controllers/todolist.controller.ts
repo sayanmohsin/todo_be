@@ -93,7 +93,7 @@ export const updateTodoListNameCtrl = async (req: Request, res: Response, next: 
  */
 export const deleteTodoListCtrl = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const result: IResponse<TodoList> = {} as IResponse<TodoList>;
+        const result: IResponse<boolean> = {} as IResponse<boolean>;
 
         const todo_list_id = req.params.todo_list_id as string;
 

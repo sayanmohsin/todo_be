@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { QueryOptions, TodoList } from "../../types/custom.type";
 import { ErrorHandler } from "../../utils/server.util";
 
-const todoListDB = {
+const pgTodoListDB = {
     create: async (
         data: TodoList
     ): Promise<TodoList> => {
@@ -114,7 +114,7 @@ const todoListDB = {
     },
     delete: async (
         todo_list_id: string
-    ): Promise<TodoList> => {
+    ): Promise<boolean> => {
         try {
             const queryOne = {
                 text: 'DELETE FROM todo_items WHERE todo_list_id = $1 RETURNING *',
@@ -134,8 +134,7 @@ const todoListDB = {
             if (resultTwo.rows.length === 0 || !resultTwo.rows[0])
                 throw new ErrorHandler(400, "Todo list delete failed");
 
-            const todoList = resultTwo.rows[0] as TodoList;
-            return todoList;
+            return true;
         } catch (e) {
             console.log('e: ', e);
             throw e;
@@ -143,4 +142,4 @@ const todoListDB = {
     }
 }
 
-export default todoListDB;
+export default pgTodoListDB;

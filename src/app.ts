@@ -13,7 +13,7 @@ import expressPino from 'express-pino-logger';
 import { normalizePort } from './utils/server.util';
 import { successMsg, errorMsg, infoMsg } from './configs/log.config';
 import { errorHandlerMiddleware, forbiddenHandlerMiddleware, notFoundHandlerMiddleware } from './middlewares/handlers.middleware';
-import { pgConnect } from './configs/db.config';
+import { initDataSource, mongoConnect, pgConnect } from './configs/db.config';
 
 (async () => {
   try {
@@ -31,6 +31,8 @@ import { pgConnect } from './configs/db.config';
 
     const app: Application = express();
     await pgConnect()
+    await mongoConnect();
+    await initDataSource();
 
     // routes
     const { todoRouter } = await import('./routes/todo');

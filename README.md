@@ -8,6 +8,11 @@ for running with docker-compose
 docker-compose up --build -d
 ```
 
+## API Documentation
+
+(https://documenter.getpostman.com/view/3873826/Tzedi53j)
+(http://localhost:3000/)
+
 ## Development
 
 To start server in development mode:

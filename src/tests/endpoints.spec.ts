@@ -1,6 +1,6 @@
-import chai, { assert, expect } from "chai";
-import chaiHttp from "chai-http";
-import "mocha";
+import chai, { assert, expect } from 'chai';
+import chaiHttp from 'chai-http';
+import 'mocha';
 import appInstance from '../app';
 
 chai.use(chaiHttp)
